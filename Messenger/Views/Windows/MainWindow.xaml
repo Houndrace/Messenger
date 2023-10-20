@@ -1,0 +1,44 @@
+﻿<ui:FluentWindow
+    ExtendsContentIntoTitleBar="True"
+    Height="802"
+    MinWidth="900"
+    Title="{Binding ViewModel.AppTitle}"
+    Width="1450"
+    WindowBackdropType="Mica"
+    WindowCornerPreference="Default"
+    WindowStartupLocation="CenterScreen"
+    d:DataContext="{d:DesignInstance local:MainWindow,
+                                     IsDesignTimeCreatable=False}"
+    d:DesignHeight="650"
+    d:DesignWidth="1000"
+    mc:Ignorable="d"
+    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    x:Class="Messenger.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Messenger"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <!--  TitleBar  -->
+        <ui:TitleBar
+            CloseWindowByDoubleClickOnIcon="True"
+            Grid.Row="0"
+            Title="{Binding ViewModel.AppTitle}"
+            x:Name="TitleBar">
+            <ui:TitleBar.Icon>
+                <ui:ImageIcon Source="../../Assets/messenger.ico" />
+            </ui:TitleBar.Icon>
+        </ui:TitleBar>
+
+        <!--  Root Frame  -->
+        <Frame Grid.Row="1" Name="RootFrame" />
+    </Grid>
+</ui:FluentWindow>
