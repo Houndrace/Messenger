@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Messenger.Services;
 using Messenger.ViewModels;
 using Messenger.Views.Pages;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,6 +33,7 @@ namespace Messenger
             // Main window container with navigation
             serviceCollection.AddSingleton<MainWindow>();
             serviceCollection.AddSingleton<MainWindowViewModel>();
+            serviceCollection.AddSingleton<IServerService, ServerService>();
 
             // All other pages and view models
             serviceCollection.AddTransient<MessengerView>();

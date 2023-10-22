@@ -2,6 +2,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger", "Messenger\Messenger.csproj", "{D4363744-E5A6-4EEF-A551-10E6E92A6CED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Console", "Messenger.Console\Messenger.Console.csproj", "{CC97815E-4110-457A-8CF2-EFE97A487ECC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Console.Client", "Messenger.Console.Client\Messenger.Console.Client.csproj", "{1ECE16EC-3507-49DF-94DF-5A1942F9EA3A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Client", "Messenger.Client\Messenger.Client.csproj", "{6AF1575C-6F18-43D1-B8C4-B5AFB1EB6701}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +18,17 @@ Global
 		{D4363744-E5A6-4EEF-A551-10E6E92A6CED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4363744-E5A6-4EEF-A551-10E6E92A6CED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4363744-E5A6-4EEF-A551-10E6E92A6CED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC97815E-4110-457A-8CF2-EFE97A487ECC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC97815E-4110-457A-8CF2-EFE97A487ECC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC97815E-4110-457A-8CF2-EFE97A487ECC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC97815E-4110-457A-8CF2-EFE97A487ECC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1ECE16EC-3507-49DF-94DF-5A1942F9EA3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ECE16EC-3507-49DF-94DF-5A1942F9EA3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ECE16EC-3507-49DF-94DF-5A1942F9EA3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ECE16EC-3507-49DF-94DF-5A1942F9EA3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AF1575C-6F18-43D1-B8C4-B5AFB1EB6701}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AF1575C-6F18-43D1-B8C4-B5AFB1EB6701}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AF1575C-6F18-43D1-B8C4-B5AFB1EB6701}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AF1575C-6F18-43D1-B8C4-B5AFB1EB6701}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

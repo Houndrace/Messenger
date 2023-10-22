@@ -1,10 +1,10 @@
 ﻿using System;
-using Messenger.ViewModels;
-using Messenger.Views.Pages;
+using Messenger.Client.ViewModels;
+using Messenger.Client.Views.Pages;
 using Microsoft.Extensions.DependencyInjection;
 using Wpf.Ui.Appearance;
 
-namespace Messenger;
+namespace Messenger.Client.Views.Windows;
 
 /// <summary>
 ///     Interaction logic for MainWindow.xaml
