@@ -53,7 +53,9 @@ public class Server
 
         while (true)
         {
-            var buffer = new byte[1024];
+            var buffer = new byte[2048];
+            
+            
             var bytesRead = await stream.ReadAsync(buffer);
 
             if (bytesRead == 0) return;
