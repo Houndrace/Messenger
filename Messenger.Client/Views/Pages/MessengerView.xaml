@@ -75,10 +75,32 @@
         </Grid.RowDefinitions>
 
         <!--  Header  -->
-        <ui:TextBlock
-            FontTypography="Subtitle"
-            Margin="16"
-            Text="Чат работяг (Houndrace, Houndrace, Houndrace, Houndrace, Houndrace)" />
+        <Grid Margin="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="60" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <ui:TextBlock FontTypography="Subtitle" Text="Чат работяг" />
+
+            <ui:Button
+                Click="Button_OnClickToRefocus"
+                Command="{Binding ViewModel.RefreshConnectionCommand}"
+                Grid.Column="1"
+                HorizontalAlignment="Center"
+                Style="{StaticResource BasePaneButtonStyle}">
+                <ui:Button.Icon>
+                    <ui:SymbolIcon Symbol="ArrowClockwise32" />
+                </ui:Button.Icon>
+            </ui:Button>
+
+            <ui:TextBlock
+                Grid.Column="2"
+                Text="{Binding ViewModel.ConnectionStatus, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, TargetNullValue=Не подключено}"
+                VerticalAlignment="Center" />
+        </Grid>
+
 
         <!--  Chat body  -->
         <ListView
@@ -167,13 +189,21 @@
             </Grid.ColumnDefinitions>
 
             <ui:TextBox
-                MaxLength="255"
+                MaxLength="1000"
+                Name="MessageField"
                 PlaceholderText="Сообщение"
                 Text="{Binding ViewModel.MessageContent, UpdateSourceTrigger=PropertyChanged}"
-                TextWrapping="Wrap" />
+                TextWrapping="Wrap">
+                <b:Interaction.Triggers>
+                    <b:KeyTrigger Key="Enter">
+                        <b:InvokeCommandAction Command="{Binding ViewModel.SendMessageCommand}" />
+                    </b:KeyTrigger>
+                </b:Interaction.Triggers>
+            </ui:TextBox>
 
             <ui:Button
                 Appearance="Primary"
+                Click="Button_OnClickToRefocus"
                 Command="{Binding ViewModel.SendMessageCommand}"
                 Grid.Column="1"
                 HorizontalAlignment="Center">

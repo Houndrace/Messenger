@@ -11,7 +11,8 @@ namespace Messenger.Client.Views.Windows;
 /// </summary>
 public partial class MainWindow
 {
-    public MainWindow(IServiceProvider serviceProvider, MainWindowViewModel viewModel)
+    public MainWindow(IServiceProvider serviceProvider,
+        MainWindowViewModel viewModel)
     {
         SystemThemeWatcher.Watch(this);
 

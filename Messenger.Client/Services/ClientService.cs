@@ -16,12 +16,16 @@ public class ClientService : IClientService
     private int _serverPort;
 
     public event IClientService.MessageRecieveHandler? MessageRecieved;
+    public event IClientService.DisconnectHandler? Disconnected;
+    public event IClientService.ConnectHandler? Connected;
+
+    public bool? IsConnected => _connectionSocket?.Connected;
 
     public void SendMessage(Message message)
     {
         if (_networkStream is null)
             throw new NullReferenceException("NetworkStream is null");
-        
+
         var memoryStream = new MemoryStream();
         _serializer.Serialize(memoryStream, message);
 
@@ -38,6 +42,7 @@ public class ClientService : IClientService
         var serverEndPoint = new IPEndPoint(_serverIpAddress, _serverPort);
 
         _connectionSocket.Connect(serverEndPoint);
+        Connected?.Invoke();
 
         _networkStream = new NetworkStream(_connectionSocket);
 
@@ -48,11 +53,22 @@ public class ClientService : IClientService
     {
         if (_networkStream is null)
             throw new NullReferenceException("NetworkStream is null");
-        
+
         while (true)
         {
-            var buffer = new byte[1024];
-            var bytesRead = await _networkStream.ReadAsync(buffer);
+            var buffer = new byte[2048];
+            int bytesRead;
+
+            try
+            {
+                bytesRead = await _networkStream.ReadAsync(buffer);
+            }
+            catch (IOException e)
+            {
+                Disconnected?.Invoke();
+                return;
+            }
+
             HandleRecievedMessage(buffer, bytesRead);
         }
     }
