@@ -9,8 +9,6 @@ public interface IClientService
 
     event MessageRecieveHandler MessageRecieved;
 
-    void StartServerReading();
-
     void SendMessage(Message message);
 
     void ConnectToServer(IPAddress ipAddress, int port);

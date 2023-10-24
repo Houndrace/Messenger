@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Net;
+using System.Windows.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Messenger.Client.Models;
@@ -15,7 +16,11 @@ public partial class MessengerViewModel : ObservableObject
     private const string Sender = "Houndrace";
 
     private readonly IClientService _clientService;
-    [ObservableProperty] private string? _messageContent;
+    [ObservableProperty] 
+    [NotifyCanExecuteChangedFor(nameof(SendMessageCommand))]
+    private string? _messageContent;
+    [ObservableProperty] private Message? _selectedItem;
+    [ObservableProperty] private bool _isSendMessageButtonEnabled;
 
     public MessengerViewModel(IClientService clientService)
     {
@@ -27,19 +32,24 @@ public partial class MessengerViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            
-            Console.WriteLine("_clientService.ConnectToServer: " + ex.Message);
+            Console.WriteLine("_clientService.ConnectToServer: " + ex.Message + "  " + ex.Source);
         }
-
-        _clientService.MessageRecieved += message => MessageCollection.Add(message);
+        
+        _clientService.MessageRecieved += message =>
+        {
+            message.MessageType = MessageType.Recieved;
+            MessageCollection.Add(message);
+        };
     }
 
     public ObservableCollection<Message> MessageCollection { get; } = new();
 
-    [RelayCommand]
-    private void OnSendMessage()
+
+    private bool CanSendMessage() => !string.IsNullOrWhiteSpace(MessageContent);
+    
+    [RelayCommand(CanExecute = nameof(CanSendMessage))]
+    private void SendMessage()
     {
-        // TODO:сделать верификацию
         var message = new Message(Sender, MessageContent, MessageType.Sended);
 
         try
@@ -48,11 +58,12 @@ public partial class MessengerViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Console.WriteLine("_clientService.SendMessage: " + ex.Message);
+            Console.WriteLine("_clientService.SendMessage: " + ex.Message + "  " + ex.Source);
             return;
         }
 
         MessageCollection.Add(message);
         MessageContent = null;
+        SelectedItem = message;
     }
 }

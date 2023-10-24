@@ -1,42 +1,31 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Xml.Serialization;
-using Messenger.Console.Client;
-using Messenger.Models;
 
-var serverIp = "127.0.0.1"; // IP адрес сервера
-var serverPort = 12345; // Порт сервера
-
-try
+internal class Client
 {
-    var clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-    var serverEndPoint = new IPEndPoint(IPAddress.Parse(serverIp), serverPort);
+    private static async Task Main(string[] args)
+    {
+        var serverIP = IPAddress.Parse("127.0.0.1");
+        var serverPort = 12345;
 
-    clientSocket.Connect(serverEndPoint);
+        var client = new TcpClient();
+        await client.ConnectAsync(serverIP, serverPort);
+        Console.WriteLine("Подключено к серверу.");
 
-    var message = new Message("fasd", "daun", MessageType.Sended);
-    var serializer = new XmlSerializer(typeof(Message));
-    var memoryStream = new MemoryStream();
-    serializer.Serialize(memoryStream, message);
-    var xmlData = memoryStream.ToArray();
+        using var clientStream = client.GetStream();
+        var buffer = new byte[1024];
 
-    var stream = new NetworkStream(clientSocket);
+        while (true)
+        {
+            Console.Write("Введите сообщение: ");
+            var message = Console.ReadLine();
+            var messageBytes = Encoding.UTF8.GetBytes(message);
+            await clientStream.WriteAsync(messageBytes, 0, messageBytes.Length);
 
-    stream.Write(xmlData);
-    Console.WriteLine("Отправлено: ");
-
-    var buffer = new byte[1024];
-    var bytesRead = clientSocket.Receive(buffer);
-    var response = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-    Console.WriteLine("Ответ сервера: " + response);
-
-    clientSocket.Shutdown(SocketShutdown.Both);
-    clientSocket.Close();
+            var bytesRead = await clientStream.ReadAsync(buffer, 0, buffer.Length);
+            var response = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+            Console.WriteLine($"Ответ от сервера: {response}");
+        }
+    }
 }
-catch (Exception ex)
-{
-    Console.WriteLine("Ошибка: " + ex.Message);
-}
-
-Console.ReadKey();

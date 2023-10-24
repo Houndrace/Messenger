@@ -14,4 +14,9 @@ public partial class MessengerView : Page
     }
 
     public MessengerViewModel ViewModel { get; }
+
+    private void ChatListView_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        ChatListView.ScrollIntoView(ChatListView.SelectedItem);
+    }
 }

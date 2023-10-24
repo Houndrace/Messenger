@@ -1,8 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
-using System.Windows;
 using System.Xml.Serialization;
 using Messenger.Client.Models;
 
@@ -11,58 +10,60 @@ namespace Messenger.Client.Services;
 public class ClientService : IClientService
 {
     private readonly XmlSerializer _serializer = new(typeof(Message));
-    private Socket? _clientSocket;
-    private IPAddress _serverIpAddress; // IP адрес сервера
+    private Socket? _connectionSocket;
+    private NetworkStream? _networkStream;
+    private IPAddress? _serverIpAddress; // IP адрес сервера
     private int _serverPort;
-
-
-    public bool? Connected => _clientSocket?.Connected;
 
     public event IClientService.MessageRecieveHandler? MessageRecieved;
 
     public void SendMessage(Message message)
     {
+        if (_networkStream is null)
+            throw new NullReferenceException("NetworkStream is null");
+        
         var memoryStream = new MemoryStream();
         _serializer.Serialize(memoryStream, message);
 
         var xmlData = memoryStream.ToArray();
 
-        var stream = new NetworkStream(_clientSocket);
-        stream.Write(xmlData);
+        _networkStream.Write(xmlData);
     }
 
     public void ConnectToServer(IPAddress ipAddress, int port)
     {
         _serverIpAddress = ipAddress;
         _serverPort = port;
-
-        _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        _connectionSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         var serverEndPoint = new IPEndPoint(_serverIpAddress, _serverPort);
 
-        _clientSocket.Connect(serverEndPoint);
+        _connectionSocket.Connect(serverEndPoint);
+
+        _networkStream = new NetworkStream(_connectionSocket);
 
         StartServerReading();
     }
 
-    public void StartServerReading()
+    private async void StartServerReading()
     {
-        var readThread = new Thread(() =>
+        if (_networkStream is null)
+            throw new NullReferenceException("NetworkStream is null");
+        
+        while (true)
         {
-            while (true)
-            {
-                var buffer = new byte[1024];
-                var bytesRead = _clientSocket.Receive(buffer);
+            var buffer = new byte[1024];
+            var bytesRead = await _networkStream.ReadAsync(buffer);
+            HandleRecievedMessage(buffer, bytesRead);
+        }
+    }
 
-                var memoryStream = new MemoryStream(buffer, 0, bytesRead);
-                var message = (Message?)_serializer.Deserialize(memoryStream);
+    private void HandleRecievedMessage(byte[] buffer, int bytesRead)
+    {
+        var memoryStream = new MemoryStream(buffer, 0, bytesRead);
+        var message = (Message?)_serializer.Deserialize(memoryStream);
 
-                if (message is null) continue;
+        if (message is null) return;
 
-                message.MessageType = MessageType.Recieved;
-
-                Application.Current.Dispatcher.Invoke(() => { MessageRecieved?.Invoke(message); });
-            }
-        });
-        readThread.Start();
+        MessageRecieved?.Invoke(message);
     }
 }
